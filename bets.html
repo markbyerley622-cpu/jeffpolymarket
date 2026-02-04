@@ -580,87 +580,44 @@
                     { level: 'info', msg: 'Amount: ' + amount + ' SOL' },
                     { level: 'info', msg: 'Multiplier: ' + multiplier + 'x' },
                     { level: 'success', msg: 'Transaction submitted to blockchain' },
-                    { level: 'info', msg: 'Awaiting confirmation...' }
+                    { level: 'info', msg: 'Bet recorded on-chain' }
                 ],
                 'success',
-                [{ text: '<span class="loading-spinner"></span>RESOLVING...', onclick: '', bg: '#667eea' }]
+                [{ text: '⏳ PROCESSING...', onclick: '', bg: '#667eea' }]
             );
 
-            // Simulate adding more console lines
+            // Show pending confirmation after processing animation
             setTimeout(() => addConsoleLine('success', 'Block confirmed: #' + Math.floor(Math.random() * 999999)), 500);
-            setTimeout(() => addConsoleLine('info', 'Fetching Epstein files data...'), 1000);
-            setTimeout(() => addConsoleLine('info', 'Checking redaction status...'), 1500);
-            setTimeout(() => addConsoleLine('info', 'Analyzing flight logs...'), 2000);
-            setTimeout(() => addConsoleLine('info', 'Processing bet resolution...'), 2500);
+            setTimeout(() => addConsoleLine('info', 'Bet registered successfully'), 1000);
+            setTimeout(() => addConsoleLine('warn', 'Awaiting Epstein files confirmation...'), 1500);
+            setTimeout(() => addConsoleLine('info', 'Status: PENDING'), 2000);
 
-            // Simulate resolution after 3 seconds
+            // Show final pending status
             setTimeout(() => {
-                const won = Math.random() > 0.5;
-                const payout = won ? amount * multiplier : 0;
-
-                const payoutData = {
-                    id: bet.id,
-                    profile: profile.name,
-                    betType,
-                    betDescription,
-                    amount,
-                    multiplier,
-                    payout,
-                    won,
-                    timestamp: new Date().toLocaleString()
-                };
-
-                const payouts = getWalletPayouts();
-                payouts.unshift(payoutData);
-                saveWalletPayouts(payouts);
-
-                // Update bet status
-                const updatedHistory = getWalletBetHistory();
-                const betIndex = updatedHistory.findIndex(b => b.id === bet.id);
-                if (betIndex !== -1) {
-                    updatedHistory[betIndex].status = won ? 'Won' : 'Lost';
-                    saveWalletBetHistory(updatedHistory);
-                }
-
                 closeModal();
-
-                if (won) {
-                    showModal(
-                        '🎉 YOU WON!',
-                        `<div style="font-size: 1.5rem;">${profile.name}</div>
-                         <div style="color: #667eea; margin: 10px 0;">${betDescription}</div>
-                         <div style="margin: 15px 0;">
-                            <div>Bet: <span style="color: #888;">${amount} SOL</span></div>
-                            <div style="font-size: 2rem; color: #22c55e; margin: 10px 0;">PAYOUT: ${payout.toFixed(2)} SOL</div>
-                            <div style="color: #ffd700;">Profit: +${(payout - amount).toFixed(2)} SOL</div>
-                         </div>`,
-                        [
-                            { level: 'success', msg: 'BET WON! Congratulations!' },
-                            { level: 'info', msg: 'Subject confirmed: ' + profile.name },
-                            { level: 'success', msg: 'Payout processed: ' + payout.toFixed(2) + ' SOL' },
-                            { level: 'success', msg: 'Funds transferred to wallet' },
-                            { level: 'info', msg: 'Transaction complete' }
-                        ],
-                        'win',
-                        [{ text: '🎉 AWESOME!', onclick: 'closeModal()', bg: '#22c55e' }]
-                    );
-                } else {
-                    showModal(
-                        '😢 BETTER LUCK NEXT TIME',
-                        `<div style="font-size: 1.5rem;">${profile.name}</div>
-                         <div style="color: #888; margin: 10px 0;">${betDescription}</div>
-                         <div style="color: #ef4444; font-size: 1.5rem; margin: 10px 0;">Lost: ${amount} SOL</div>`,
-                        [
-                            { level: 'warn', msg: 'Bet lost' },
-                            { level: 'info', msg: 'Subject: ' + profile.name },
-                            { level: 'info', msg: 'The truth remains hidden...' },
-                            { level: 'info', msg: 'Try again with another bet!' }
-                        ],
-                        '',
-                        [{ text: 'TRY AGAIN', onclick: 'closeModal()', bg: '#ff6b6b' }]
-                    );
-                }
-            }, 3000);
+                showModal(
+                    '⏳ BET PENDING',
+                    `<div style="font-size: 1.5rem;">${profile.name}</div>
+                     <div style="color: #667eea; margin: 10px 0;">${betDescription}</div>
+                     <div style="font-size: 1.5rem; margin: 15px 0;">
+                        <div>Amount: <span style="color: #22c55e; font-weight: bold;">${amount} SOL</span></div>
+                        <div style="margin-top: 5px;">Potential Payout: <span style="color: #ffd700; font-weight: bold;">${(amount * multiplier).toFixed(2)} SOL</span></div>
+                     </div>
+                     <div style="background: #1a1a2e; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="color: #ffaa00; font-size: 1.1rem;">⚠️ AWAITING CONFIRMATION</p>
+                        <p style="color: #aaa; font-size: 0.9rem; margin-top: 8px;">Your bet will be resolved once the Epstein files are officially confirmed and verified. Check back for updates!</p>
+                     </div>`,
+                    [
+                        { level: 'success', msg: 'Bet successfully placed!' },
+                        { level: 'info', msg: 'Bet ID: #' + bet.id },
+                        { level: 'warn', msg: 'Status: PENDING - Awaiting file confirmation' },
+                        { level: 'info', msg: 'Payout will process once names are verified' },
+                        { level: 'info', msg: 'Check History page to track your bets' }
+                    ],
+                    '',
+                    [{ text: '👍 GOT IT!', onclick: 'closeModal()', bg: '#ffd700' }]
+                );
+            }, 2500);
         }
 
         // Initialize page

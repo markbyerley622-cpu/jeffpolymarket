@@ -56,6 +56,17 @@
                 <p class="comic-text text-xl md:text-2xl">Track Your Bets</p>
             </div>
 
+            <!-- Pending Notice -->
+            <div class="comic-card p-4 md:p-6 mb-6 bg-yellow-100 border-6 border-black">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">⏳</span>
+                    <div>
+                        <p class="font-bold text-lg" style="font-family: 'Bangers', cursive;">ALL BETS ARE PENDING</p>
+                        <p class="text-sm text-gray-700">Bets will be resolved once the Epstein files are officially confirmed and names are verified. Payouts will process automatically when results are in!</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Summary Stats -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
                 <div class="comic-card p-4 bg-blue-300">
@@ -128,16 +139,23 @@
             historyList.innerHTML = history.map(bet => {
                 let statusColor = 'bg-yellow-400';
                 let statusIcon = '⏳';
+                let statusText = 'PENDING';
+                let statusNote = 'Awaiting file confirmation';
                 if (bet.status === 'Won') {
                     statusColor = 'bg-green-400';
                     statusIcon = '✅';
+                    statusText = 'WON';
+                    statusNote = '';
                 } else if (bet.status === 'Lost') {
                     statusColor = 'bg-red-400';
                     statusIcon = '❌';
+                    statusText = 'LOST';
+                    statusNote = '';
                 }
 
                 const betDesc = bet.betDescription || (bet.betType === 'over' ? 'OVER 12' : bet.betType === 'under' ? 'UNDER 12' : 'ON LIST');
                 const multiplier = bet.multiplier || 1.9;
+                const potentialPayout = (bet.amount * multiplier).toFixed(2);
 
                 return `
                     <div class="border-4 border-black rounded-lg p-4 bg-gray-50 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -146,11 +164,15 @@
                             <p class="text-gray-700">
                                 <strong>${betDesc}</strong> (${multiplier}x) •
                                 <strong>${bet.amount} SOL</strong>
+                                ${bet.status === 'Pending' ? `<span style="color: #22c55e;"> → Potential: ${potentialPayout} SOL</span>` : ''}
                             </p>
                             <p class="text-sm text-gray-500">${bet.timestamp}</p>
                         </div>
-                        <div class="${statusColor} px-6 py-3 rounded-full border-3 border-black font-bold text-center whitespace-nowrap">
-                            ${statusIcon} ${bet.status.toUpperCase()}
+                        <div class="text-center">
+                            <div class="${statusColor} px-6 py-3 rounded-full border-3 border-black font-bold whitespace-nowrap">
+                                ${statusIcon} ${statusText}
+                            </div>
+                            ${statusNote ? `<p class="text-xs text-gray-500 mt-1">${statusNote}</p>` : ''}
                         </div>
                     </div>
                 `;
