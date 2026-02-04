@@ -11,7 +11,9 @@
       "Bash(git config:*)",
       "Bash(node:*)",
       "Bash(timeout:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "WebFetch(domain:jeffpolymarket.vercel.app)",
+      "Bash(ls:*)"
     ]
   }
 }

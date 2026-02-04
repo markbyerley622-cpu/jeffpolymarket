@@ -1,9 +1,8 @@
 {
-  "outputDirectory": "public",
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "framework": null,
   "rewrites": [
-    { "source": "/", "destination": "/bets.html" },
-    { "source": "/bets", "destination": "/bets.html" },
-    { "source": "/history", "destination": "/history.html" },
-    { "source": "/payouts", "destination": "/payouts.html" }
+    { "source": "/", "destination": "/bets.html" }
   ]
 }
