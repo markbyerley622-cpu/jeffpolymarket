@@ -10,7 +10,8 @@
       "Bash(git push:*)",
       "Bash(git config:*)",
       "Bash(node:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(dir:*)"
     ]
   }
 }
