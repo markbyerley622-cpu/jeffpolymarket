@@ -1,18 +1,8 @@
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
 const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -21,7 +11,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files (HTML, CSS, JS, images)
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname), {
+    extensions: ['html', 'htm']
+}));
 
 // Routes
 app.get('/', (req, res) => {
@@ -38,15 +30,6 @@ app.get('/history', (req, res) => {
 
 app.get('/payouts', (req, res) => {
     res.sendFile(path.join(__dirname, 'payouts.html'));
-});
-
-// Socket.io connection handling
-io.on('connection', (socket) => {
-    console.log('Client connected:', socket.id);
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected:', socket.id);
-    });
 });
 
 // API Endpoints
@@ -79,9 +62,10 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start server
-server.listen(PORT, () => {
-    console.log(`
+// Start server (only when run directly, not when imported by Vercel)
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`
     ╔════════════════════════════════════════╗
     ║   🎰 EPSTEIN BETS SERVER RUNNING 🎰   ║
     ╠════════════════════════════════════════╣
@@ -89,22 +73,9 @@ server.listen(PORT, () => {
     ║   URL: http://localhost:${PORT}
     ║   Status: ONLINE
     ╚════════════════════════════════════════╝
-    `);
-});
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    console.log('SIGTERM received. Closing server...');
-    server.close(() => {
-        console.log('Server closed');
-        process.exit(0);
+        `);
     });
-});
+}
 
-process.on('SIGINT', () => {
-    console.log('\nSIGINT received. Closing server...');
-    server.close(() => {
-        console.log('Server closed');
-        process.exit(0);
-    });
-});
+// Export for Vercel
+module.exports = app;
