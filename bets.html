@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epstein Bets - Place Your Bets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+    <style>
+        .outlined-text {
+            text-shadow:
+                -2px -2px 0 #000,
+                2px -2px 0 #000,
+                -2px 2px 0 #000,
+                2px 2px 0 #000,
+                -3px 0 0 #000,
+                3px 0 0 #000,
+                0 -3px 0 #000,
+                0 3px 0 #000;
+        }
+        .profile-image-bordered {
+            border: 4px solid #000;
+            box-shadow: 0 0 0 2px #fff, 0 0 0 6px #000;
+        }
+        /* Confirmation Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+            to { transform: scale(1) rotate(-1deg); opacity: 1; }
+        }
+        .modal-content {
+            background: white;
+            border: 6px solid #000;
+            border-radius: 20px;
+            box-shadow: 15px 15px 0 rgba(0,0,0,0.4);
+            max-width: 500px;
+            width: 90%;
+            animation: slideIn 0.3s ease;
+            transform: rotate(-1deg);
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 14px 14px 0 0;
+            border-bottom: 4px solid #000;
+        }
+        .modal-header.success {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+        .modal-header.win {
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b6b 100%);
+        }
+        .modal-body {
+            padding: 25px;
+        }
+        .console-output {
+            background: #1a1a2e;
+            border: 3px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #00ff00;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            margin: 15px 0;
+        }
+        .console-line {
+            margin: 5px 0;
+            display: flex;
+            gap: 8px;
+        }
+        .console-line .timestamp {
+            color: #888;
+        }
+        .console-line .level-info {
+            color: #00bfff;
+        }
+        .console-line .level-success {
+            color: #00ff00;
+        }
+        .console-line .level-warn {
+            color: #ffaa00;
+        }
+        .console-line .message {
+            color: #fff;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modalHeader" class="modal-header">
+                <h2 id="modalTitle" class="text-3xl font-bold text-white text-center outlined-text" style="font-family: 'Bangers', cursive;"></h2>
+            </div>
+            <div class="modal-body">
+                <div id="modalMessage" class="text-center text-xl font-bold mb-4" style="font-family: 'Bangers', cursive;"></div>
+                <div id="consoleOutput" class="console-output"></div>
+                <div id="modalActions" class="flex justify-center gap-4 mt-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comic Background -->
+    <div class="comic-background"></div>
+    <div class="halftone-overlay"></div>
+
+    <!-- Comic Panels -->
+    <div class="comic-panel panel-1"><img src="jeff1.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-2"><img src="jeff2.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-3"><img src="jeff3.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-4"><img src="jeff4.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-5"><img src="jeff5.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-6"><img src="jeff 7.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-7"><img src="jeff 8.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-8"><img src="jeffery-removebg-preview.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-9"><img src="jeff9.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-10"><img src="jeff10.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-11"><img src="jeff11.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-12"><img src="jeff12.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-13"><img src="jeff 13.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-14"><img src="jeff 14.png" alt="Comic Panel"></div>
+    <div class="comic-panel panel-15"><img src="jeff 15.png" alt="Comic Panel"></div>
+
+    <!-- Profile Panels -->
+    <div class="profile-panel profile-1"><img src="andrew.png" alt="Andrew"></div>
+    <div class="profile-panel profile-2"><img src="bill.png" alt="Bill"></div>
+    <div class="profile-panel profile-3"><img src="david.png" alt="David"></div>
+    <div class="profile-panel profile-4"><img src="donald.png" alt="Donald"></div>
+    <div class="profile-panel profile-5"><img src="leo.png" alt="Leo"></div>
+    <div class="profile-panel profile-6"><img src="stephen.png" alt="Stephen"></div>
+    <div class="profile-panel profile-7"><img src="hillary.png" alt="Hillary"></div>
+
+    <!-- Large Jeffrey Watermark -->
+    <div class="jeffrey-watermark">
+        <img src="jeffery-removebg-preview.png" alt="Jeffrey">
+    </div>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+        <div class="max-w-7xl mx-auto">
+            <!-- Universal Navigation -->
+            <div id="universalNav"></div>
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="boom-text text-6xl md:text-8xl mb-8 outlined-text" style="color: #ff0000;">PLACE YOUR BETS!</h1>
+
+                <!-- Important Notice -->
+                <div class="comic-card p-8 md:p-12 max-w-5xl mx-auto mb-10 bg-yellow-100 border-8 border-black">
+                    <div class="text-left space-y-6">
+                        <div class="flex items-start gap-4">
+                            <span class="text-5xl">⚖️</span>
+                            <div>
+                                <h3 class="text-3xl md:text-4xl font-bold mb-3 outlined-text" style="font-family: 'Bangers', cursive; color: #ff0000;">
+                                    BREAKING: EPSTEIN FILES RELEASED
+                                </h3>
+                                <p class="text-xl md:text-2xl font-bold leading-relaxed">
+                                    The Justice Department has released Epstein investigation files - but <span style="color: #ff0000;">MOST ARE HEAVILY REDACTED!</span> Who's hiding behind those black bars?
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="border-t-6 border-black pt-6">
+                            <h4 class="text-2xl md:text-3xl font-bold mb-3 outlined-text" style="font-family: 'Bangers', cursive; color: #0066ff;">
+                                📜 PLACE YOUR BETS: WHO'S ON THE LIST?
+                            </h4>
+                            <p class="text-lg md:text-xl leading-relaxed mb-3">
+                                Will these high-profile individuals be named in the released documents?
+                            </p>
+                            <div class="bg-white border-4 border-black rounded-lg p-4 mb-3">
+                                <p class="text-lg md:text-xl font-bold mb-2">🎯 BETTING OPTIONS:</p>
+                                <ul class="space-y-2 text-base md:text-lg">
+                                    <li><strong>Option 1:</strong> Bet they're "ON THE LIST" = <span class="text-green-600 font-bold">1.9x payout</span></li>
+                                    <li><strong>Option 2:</strong> Bet "ON LIST + OVER 12 flights" = <span class="text-purple-600 font-bold">3.0x payout</span></li>
+                                    <li><strong>Option 3:</strong> Bet "ON LIST + UNDER 12 flights" = <span class="text-purple-600 font-bold">3.0x payout</span></li>
+                                </ul>
+                            </div>
+                            <p class="text-base md:text-lg italic">
+                                💡 Higher risk, higher reward! Guess the exact flight count for bigger payouts.
+                            </p>
+                        </div>
+
+                        <div class="border-t-6 border-black pt-6">
+                            <h4 class="text-2xl md:text-3xl font-bold mb-4 outlined-text" style="font-family: 'Bangers', cursive; color: #00aa00;">
+                                💰 PAYOUTS & TOKENOMICS
+                            </h4>
+                            <div class="text-lg md:text-xl space-y-3 leading-relaxed">
+                                <p class="flex items-start gap-2">
+                                    <span class="text-2xl">✅</span>
+                                    <span>All payouts are <strong>funded from 0.3% creator fees</strong> earned from buys and sells of <strong>$TEB</strong></span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-2xl">🔒</span>
+                                    <span><strong>Dev wallet locks at 250K Market Cap</strong> - ensuring fair distribution and community trust</span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-2xl">📊</span>
+                                    <span>With expected <strong>400K+ trading volume</strong>, we can sustain max payouts of <strong class="text-green-600">12 SOL per win minimum</strong></span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-2xl">🎰</span>
+                                    <span>Win up to <strong class="text-purple-600 text-2xl">3.0x your bet</strong> when you guess correctly!</span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-2xl">💸</span>
+                                    <span><strong>Max Bet: 4 SOL</strong> per person (sustainable with 0.3% creator fees at scale)</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Betting Grid -->
+            <div id="bettingGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+                <!-- Cards will be generated here -->
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mb-12">
+                <div class="comic-card p-8 md:p-12 bg-gradient-to-r from-purple-600 to-pink-600 max-w-3xl mx-auto">
+                    <h3 class="text-4xl md:text-5xl font-bold text-white mb-4 outlined-text" style="font-family: 'Bangers', cursive;">
+                        READY TO BET?
+                    </h3>
+                    <p class="text-xl md:text-2xl text-white mb-6 font-bold">
+                        Connect your wallet and place your bets before the truth comes out!
+                    </p>
+                    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="comic-button text-2xl px-12 py-6 bg-yellow-400 hover:bg-yellow-500">
+                        ⬆️ SCROLL TO TOP & BET NOW
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+        const profiles = [
+            {
+                id: 1,
+                name: 'Prince Andrew',
+                image: 'andrew.png',
+                description: 'Member of British Royal Family, stripped of military titles and royal patronages in 2022'
+            },
+            {
+                id: 2,
+                name: 'Bill Clinton',
+                image: 'bill.png',
+                description: '42nd President of the United States, traveled on Epstein\'s plane multiple times'
+            },
+            {
+                id: 3,
+                name: 'David Copperfield',
+                image: 'david.png',
+                description: 'World-famous illusionist and magician, named in Epstein court documents'
+            },
+            {
+                id: 4,
+                name: 'Donald Trump',
+                image: 'donald.png',
+                description: '45th & 47th President of the United States, former friend of Epstein in the 1990s'
+            },
+            {
+                id: 5,
+                name: 'Leo DiCaprio',
+                image: 'leo.png',
+                description: 'Academy Award-winning actor, allegedly attended events at Epstein properties'
+            },
+            {
+                id: 6,
+                name: 'Stephen Hawking',
+                image: 'stephen.png',
+                description: 'Renowned theoretical physicist, visited Epstein\'s private island in 2006'
+            },
+            {
+                id: 7,
+                name: 'Hillary Clinton',
+                image: 'hillary.png',
+                description: 'Former Secretary of State and First Lady, husband traveled on Epstein\'s aircraft'
+            }
+        ];
+
+        const MAX_BET = 4; // Maximum bet in SOL
+        const selectedBets = {};
+        const betAmounts = {};
+
+        function renderBettingCards() {
+            const grid = document.getElementById('bettingGrid');
+            grid.innerHTML = profiles.map(profile => `
+                <div class="comic-card p-6 bg-white">
+                    <!-- Profile Image -->
+                    <div class="flex justify-center mb-4">
+                        <div class="w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden profile-image-bordered">
+                            <img src="${profile.image}" alt="${profile.name}" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Profile Name -->
+                    <h3 class="text-2xl font-bold text-center mb-2" style="font-family: 'Bangers', cursive;">
+                        ${profile.name}
+                    </h3>
+
+                    <!-- Profile Description -->
+                    <p class="text-xs md:text-sm text-gray-600 text-center mb-6 px-2 italic">
+                        ${profile.description}
+                    </p>
+
+                    <!-- Bet Buttons -->
+                    <div class="space-y-3 mb-6">
+                        <button
+                            onclick="selectBet(${profile.id}, 'onlist')"
+                            id="onlist-${profile.id}"
+                            class="w-full py-3 px-3 bg-blue-500 text-white font-bold text-base border-4 border-black rounded-lg shadow-md hover:bg-blue-600 transition-all"
+                            style="font-family: 'Bangers', cursive;">
+                            ON LIST (1.9x)
+                        </button>
+                        <button
+                            onclick="selectBet(${profile.id}, 'over')"
+                            id="over-${profile.id}"
+                            class="w-full py-3 px-3 bg-green-500 text-white font-bold text-base border-4 border-black rounded-lg shadow-md hover:bg-green-600 transition-all"
+                            style="font-family: 'Bangers', cursive;">
+                            ON LIST + OVER 12 (3.0x)
+                        </button>
+                        <button
+                            onclick="selectBet(${profile.id}, 'under')"
+                            id="under-${profile.id}"
+                            class="w-full py-3 px-3 bg-red-500 text-white font-bold text-base border-4 border-black rounded-lg shadow-md hover:bg-red-600 transition-all"
+                            style="font-family: 'Bangers', cursive;">
+                            ON LIST + UNDER 12 (3.0x)
+                        </button>
+                    </div>
+
+                    <!-- Amount Input -->
+                    <input
+                        type="number"
+                        id="amount-${profile.id}"
+                        placeholder="Enter SOL (Max: ${MAX_BET})"
+                        min="0"
+                        max="${MAX_BET}"
+                        step="0.1"
+                        class="w-full px-4 py-3 border-4 border-black rounded-lg mb-4 text-center font-bold"
+                        style="font-family: 'Bangers', cursive; font-size: 1.1rem;"
+                    />
+
+                    <!-- Place Bet Button -->
+                    <button
+                        onclick="placeBet(${profile.id})"
+                        class="w-full comic-button py-4 bg-yellow-400 hover:bg-yellow-500"
+                        style="font-family: 'Bangers', cursive;">
+                        💸 PLACE BET
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function selectBet(profileId, betType) {
+            selectedBets[profileId] = betType;
+
+            // Reset all buttons for this profile
+            const onlistBtn = document.getElementById(`onlist-${profileId}`);
+            const overBtn = document.getElementById(`over-${profileId}`);
+            const underBtn = document.getElementById(`under-${profileId}`);
+
+            onlistBtn.style.background = '#3b82f6';
+            overBtn.style.background = '#22c55e';
+            underBtn.style.background = '#ef4444';
+            onlistBtn.style.boxShadow = '';
+            overBtn.style.boxShadow = '';
+            underBtn.style.boxShadow = '';
+
+            // Highlight selected button
+            const selectedBtn = document.getElementById(`${betType}-${profileId}`);
+            selectedBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            selectedBtn.style.boxShadow = '0 0 25px rgba(102, 126, 234, 0.9)';
+        }
+
+        // Modal functions
+        function showModal(title, message, consoleLines, headerClass, actions) {
+            const modal = document.getElementById('confirmModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const consoleOutput = document.getElementById('consoleOutput');
+            const modalHeader = document.getElementById('modalHeader');
+            const modalActions = document.getElementById('modalActions');
+
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
+            modalHeader.className = 'modal-header ' + (headerClass || '');
+
+            // Build console output
+            consoleOutput.innerHTML = consoleLines.map(line => `
+                <div class="console-line">
+                    <span class="timestamp">[${new Date().toLocaleTimeString()}]</span>
+                    <span class="level-${line.level}">[${line.level.toUpperCase()}]</span>
+                    <span class="message">${line.msg}</span>
+                </div>
+            `).join('');
+
+            // Build action buttons
+            modalActions.innerHTML = actions.map(action => `
+                <button onclick="${action.onclick}" class="comic-button px-8 py-3" style="background: ${action.bg || '#ffd700'}; font-family: 'Bangers', cursive;">
+                    ${action.text}
+                </button>
+            `).join('');
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        function addConsoleLine(level, msg) {
+            const consoleOutput = document.getElementById('consoleOutput');
+            consoleOutput.innerHTML += `
+                <div class="console-line">
+                    <span class="timestamp">[${new Date().toLocaleTimeString()}]</span>
+                    <span class="level-${level}">[${level.toUpperCase()}]</span>
+                    <span class="message">${msg}</span>
+                </div>
+            `;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function placeBet(profileId) {
+            // Check wallet connection
+            if (!walletConnected) {
+                showModal(
+                    '⚠️ WALLET REQUIRED',
+                    'Please connect your wallet to place bets!',
+                    [
+                        { level: 'warn', msg: 'No wallet connection detected' },
+                        { level: 'info', msg: 'Click Connect Wallet in the header' }
+                    ],
+                    '',
+                    [{ text: 'GOT IT', onclick: 'closeModal()', bg: '#ff6b6b' }]
+                );
+                return;
+            }
+
+            const profile = profiles.find(p => p.id === profileId);
+            const betType = selectedBets[profileId];
+            const amountInput = document.getElementById(`amount-${profileId}`);
+            const amount = parseFloat(amountInput.value);
+
+            if (!betType) {
+                showModal(
+                    '⚠️ SELECT BET TYPE',
+                    'Choose a betting option first!',
+                    [
+                        { level: 'warn', msg: 'No bet type selected for ' + profile.name },
+                        { level: 'info', msg: 'Select ON LIST, OVER 12, or UNDER 12' }
+                    ],
+                    '',
+                    [{ text: 'OK', onclick: 'closeModal()', bg: '#ff6b6b' }]
+                );
+                return;
+            }
+
+            if (!amount || amount <= 0) {
+                showModal(
+                    '⚠️ ENTER AMOUNT',
+                    'Please enter a valid bet amount!',
+                    [
+                        { level: 'warn', msg: 'Invalid bet amount: ' + (amount || 'empty') },
+                        { level: 'info', msg: 'Enter SOL amount between 0.1 and ' + MAX_BET }
+                    ],
+                    '',
+                    [{ text: 'OK', onclick: 'closeModal()', bg: '#ff6b6b' }]
+                );
+                return;
+            }
+
+            if (amount > MAX_BET) {
+                showModal(
+                    '⚠️ MAX BET EXCEEDED',
+                    `Maximum bet is ${MAX_BET} SOL!`,
+                    [
+                        { level: 'warn', msg: 'Attempted bet: ' + amount + ' SOL' },
+                        { level: 'info', msg: 'Max allowed: ' + MAX_BET + ' SOL' }
+                    ],
+                    '',
+                    [{ text: 'OK', onclick: 'closeModal()', bg: '#ff6b6b' }]
+                );
+                return;
+            }
+
+            // Determine bet details
+            let betDescription = '';
+            let multiplier = 0;
+
+            if (betType === 'onlist') {
+                betDescription = 'ON THE LIST';
+                multiplier = 1.9;
+            } else if (betType === 'over') {
+                betDescription = 'ON LIST + OVER 12 flights';
+                multiplier = 3.0;
+            } else if (betType === 'under') {
+                betDescription = 'ON LIST + UNDER 12 flights';
+                multiplier = 3.0;
+            }
+
+            // Create bet
+            const bet = {
+                id: Date.now(),
+                profile: profile.name,
+                betType,
+                betDescription,
+                multiplier,
+                amount,
+                timestamp: new Date().toLocaleString(),
+                status: 'Pending'
+            };
+
+            // Save to wallet-specific localStorage
+            const history = getWalletBetHistory();
+            history.unshift(bet);
+            saveWalletBetHistory(history);
+
+            // Clear selections
+            delete selectedBets[profileId];
+            amountInput.value = '';
+            document.getElementById(`onlist-${profileId}`).style.background = '#3b82f6';
+            document.getElementById(`over-${profileId}`).style.background = '#22c55e';
+            document.getElementById(`under-${profileId}`).style.background = '#ef4444';
+            document.getElementById(`onlist-${profileId}`).style.boxShadow = '';
+            document.getElementById(`over-${profileId}`).style.boxShadow = '';
+            document.getElementById(`under-${profileId}`).style.boxShadow = '';
+
+            // Show bet confirmation with console output
+            showModal(
+                '✅ BET PLACED!',
+                `<div style="font-size: 1.5rem;">${profile.name}</div>
+                 <div style="color: #667eea; margin: 10px 0;">${betDescription}</div>
+                 <div style="font-size: 1.8rem; color: #22c55e;">${amount} SOL</div>
+                 <div style="margin-top: 10px;">Potential Payout: <span style="color: #ffd700;">${(amount * multiplier).toFixed(2)} SOL</span></div>`,
+                [
+                    { level: 'info', msg: 'Connecting to Solana network...' },
+                    { level: 'success', msg: 'Wallet authenticated: ' + walletAddress.slice(0, 8) + '...' },
+                    { level: 'info', msg: 'Creating bet transaction...' },
+                    { level: 'info', msg: 'Bet ID: #' + bet.id },
+                    { level: 'info', msg: 'Subject: ' + profile.name },
+                    { level: 'info', msg: 'Type: ' + betDescription },
+                    { level: 'info', msg: 'Amount: ' + amount + ' SOL' },
+                    { level: 'info', msg: 'Multiplier: ' + multiplier + 'x' },
+                    { level: 'success', msg: 'Transaction submitted to blockchain' },
+                    { level: 'info', msg: 'Awaiting confirmation...' }
+                ],
+                'success',
+                [{ text: '<span class="loading-spinner"></span>RESOLVING...', onclick: '', bg: '#667eea' }]
+            );
+
+            // Simulate adding more console lines
+            setTimeout(() => addConsoleLine('success', 'Block confirmed: #' + Math.floor(Math.random() * 999999)), 500);
+            setTimeout(() => addConsoleLine('info', 'Fetching Epstein files data...'), 1000);
+            setTimeout(() => addConsoleLine('info', 'Checking redaction status...'), 1500);
+            setTimeout(() => addConsoleLine('info', 'Analyzing flight logs...'), 2000);
+            setTimeout(() => addConsoleLine('info', 'Processing bet resolution...'), 2500);
+
+            // Simulate resolution after 3 seconds
+            setTimeout(() => {
+                const won = Math.random() > 0.5;
+                const payout = won ? amount * multiplier : 0;
+
+                const payoutData = {
+                    id: bet.id,
+                    profile: profile.name,
+                    betType,
+                    betDescription,
+                    amount,
+                    multiplier,
+                    payout,
+                    won,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                const payouts = getWalletPayouts();
+                payouts.unshift(payoutData);
+                saveWalletPayouts(payouts);
+
+                // Update bet status
+                const updatedHistory = getWalletBetHistory();
+                const betIndex = updatedHistory.findIndex(b => b.id === bet.id);
+                if (betIndex !== -1) {
+                    updatedHistory[betIndex].status = won ? 'Won' : 'Lost';
+                    saveWalletBetHistory(updatedHistory);
+                }
+
+                closeModal();
+
+                if (won) {
+                    showModal(
+                        '🎉 YOU WON!',
+                        `<div style="font-size: 1.5rem;">${profile.name}</div>
+                         <div style="color: #667eea; margin: 10px 0;">${betDescription}</div>
+                         <div style="margin: 15px 0;">
+                            <div>Bet: <span style="color: #888;">${amount} SOL</span></div>
+                            <div style="font-size: 2rem; color: #22c55e; margin: 10px 0;">PAYOUT: ${payout.toFixed(2)} SOL</div>
+                            <div style="color: #ffd700;">Profit: +${(payout - amount).toFixed(2)} SOL</div>
+                         </div>`,
+                        [
+                            { level: 'success', msg: 'BET WON! Congratulations!' },
+                            { level: 'info', msg: 'Subject confirmed: ' + profile.name },
+                            { level: 'success', msg: 'Payout processed: ' + payout.toFixed(2) + ' SOL' },
+                            { level: 'success', msg: 'Funds transferred to wallet' },
+                            { level: 'info', msg: 'Transaction complete' }
+                        ],
+                        'win',
+                        [{ text: '🎉 AWESOME!', onclick: 'closeModal()', bg: '#22c55e' }]
+                    );
+                } else {
+                    showModal(
+                        '😢 BETTER LUCK NEXT TIME',
+                        `<div style="font-size: 1.5rem;">${profile.name}</div>
+                         <div style="color: #888; margin: 10px 0;">${betDescription}</div>
+                         <div style="color: #ef4444; font-size: 1.5rem; margin: 10px 0;">Lost: ${amount} SOL</div>`,
+                        [
+                            { level: 'warn', msg: 'Bet lost' },
+                            { level: 'info', msg: 'Subject: ' + profile.name },
+                            { level: 'info', msg: 'The truth remains hidden...' },
+                            { level: 'info', msg: 'Try again with another bet!' }
+                        ],
+                        '',
+                        [{ text: 'TRY AGAIN', onclick: 'closeModal()', bg: '#ff6b6b' }]
+                    );
+                }
+            }, 3000);
+        }
+
+        // Initialize page
+        renderUniversalNav('bets');
+        renderBettingCards();
+    </script>
+</body>
+</html>
