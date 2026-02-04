@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Epstein Bets - Place Your Bets</title>
+    <title>Censored Polymarket - Place Your Bets</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
@@ -118,6 +118,27 @@
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        /* Censored name styling */
+        .censored-name {
+            display: inline-block;
+            background: #000;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 3px;
+            position: relative;
+            user-select: none;
+        }
+        .censored-name::before {
+            content: attr(data-name);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            color: transparent;
+            padding: 2px 8px;
         }
     </style>
 </head>
@@ -333,7 +354,7 @@
 
                     <!-- Profile Name -->
                     <h3 class="text-2xl font-bold text-center mb-2" style="font-family: 'Bangers', cursive;">
-                        ${profile.name}
+                        <span class="censored-name">${profile.name}</span>
                     </h3>
 
                     <!-- Profile Description -->

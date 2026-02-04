@@ -22,7 +22,7 @@ function renderUniversalHeader() {
                 <!-- Logo/Title -->
                 <div class="text-center md:text-left">
                     <h1 class="text-2xl md:text-3xl font-bold" style="font-family: 'Bangers', cursive; color: #000;">
-                        The EPSTEIN BETS
+                        Censored Polymarket
                     </h1>
                 </div>
 
